@@ -12,7 +12,7 @@ agent any
 stages{
        stage('Checkout SCM'){
           steps {
-            git credentialsId: '0c5360fe-fdca-40ce-95b3-d77b9b1512e6', url: 'https://github.com/venkeystore/Maven_Project.git' 
+            git credentialsId: '99e9946b-edd2-479a-9452-a4df3e122f83', url: 'https://github.com/venkeystore/Maven_Project.git' 
          }
          }
 
