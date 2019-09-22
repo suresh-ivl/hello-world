@@ -1,0 +1,72 @@
+pipeline {
+
+agent any            
+                                  
+     tools {
+        maven 'APACHE_MAVEN_3.5.0'  
+        jdk 'Java_JDK_1.8'         
+                                
+           }
+
+                                
+stages{
+       stage('Checkout SCM'){
+          steps {
+            git credentialsId: '0c5360fe-fdca-40ce-95b3-d77b9b1512e6', url: 'https://github.com/venkeystore/Maven_Project.git' 
+         }
+         }
+
+                                         
+                                                
+       stage('Build Phase'){
+            steps {
+                bat 'mvn clean package'                                                                                                                                                                                                                                                                    
+                }
+                                                                
+            post {
+                success {
+                    echo 'Now Archiving...'
+                    archiveArtifacts artifacts: '**/target/*.war'
+                }
+            }
+        }
+                                
+                                
+                                
+        stage('Static Code analysis'){
+            steps {
+                                                   bat 'mvn sonar:sonar'                                                                                                                                                                                                                                                                        
+            }
+        }                     
+                                
+
+
+
+        stage ('Deploy to Staging'){
+
+                
+                    steps {
+                         // bat "set JAVA_HOME=C:\Users\hyd.guest\Desktop\PleaseDontDelete\CommonFiles\JDK64"
+// bat "set CLASSPATH=C:\Users\hyd.guest\Desktop\PleaseDontDelete\CommonFiles\JDK64\bin"
+// bat "set CATALINA_HOME=C:\Users\hyd.guest\Desktop\PleaseDontDelete\apache-tomcat-9.0.24-windows-x64\apache-tomcat-9.0.24"
+bat label: '', script: '%CATALINA_HOME%\\bin\\shutdown.bat'                                                                                   
+bat label: '', script: 'copy C:\\Users\\hyd.guest\\.jenkins\\workspace\\Mock_project\\target\\*.war C:\\Users\\hyd.guest\\Desktop\\PleaseDontDelete\\apache-tomcat-9.0.24-windows-x64\\apache-tomcat-9.0.24\\webapps'
+bat label: '', script: '%CATALINA_HOME%\\bin\\startup.bat'
+                                                                                                
+          
+                }
+            }
+        
+                                
+
+        //stage('EmailNotification Phase'){
+        //    steps {
+        //                                        
+//                            emailext body: 'Let analys your console ', subject: 'BuildNotification', to: 'venkey623@live.com'
+        //    }
+
+        //}                 
+
+
+    }
+}
